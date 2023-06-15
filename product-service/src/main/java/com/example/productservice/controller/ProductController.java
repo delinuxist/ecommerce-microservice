@@ -6,8 +6,11 @@ import com.example.productservice.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -27,5 +30,10 @@ public class ProductController {
     public ResponseEntity<List<ProductResponse>> getAllProducts() {
         return ResponseEntity.ok()
                 .body(productService.getAllProducts());
+    }
+
+    @GetMapping("/user")
+    public Object userDetails(@AuthenticationPrincipal Jwt jwt){
+        return jwt;
     }
 }
