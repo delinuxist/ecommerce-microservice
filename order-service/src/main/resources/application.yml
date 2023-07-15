@@ -22,3 +22,36 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+
+# actuator for circuit breaker config
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
+# Resilience config
+resilience4j:
+  circuitbreaker:
+    configs:
+      inventory:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        slidingWindowType: COUNT_BASED
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+#        record-exceptions:
+#          - org.springframework.web.client.HttpServerErrorException
+#          - java.util.concurrent.TimeoutException
+#          - java.io.IOException
