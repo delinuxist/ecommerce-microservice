@@ -55,3 +55,19 @@ resilience4j:
 #          - org.springframework.web.client.HttpServerErrorException
 #          - java.util.concurrent.TimeoutException
 #          - java.io.IOException
+
+# resilience4j timeout properties
+  timelimiter:
+    instances:
+      inventory:
+        timeoutDuration: 3s
+
+# resilience4j retry properties
+  retry:
+    instances:
+      inventory:
+        maxAttempts: 3
+        waitDuration: 5s
+
+
+
