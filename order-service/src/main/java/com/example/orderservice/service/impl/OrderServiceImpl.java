@@ -28,7 +28,7 @@ public class OrderServiceImpl implements OrderService {
     private final WebClient.Builder webClientBuilder;
 
     @Override
-    public void placeOrder(OrderRequestDto orderRequestDto) {
+    public String placeOrder(OrderRequestDto orderRequestDto) {
         Order order = Order.builder()
                 .oderNumber(UUID.randomUUID())
                 .build();
@@ -62,5 +62,6 @@ public class OrderServiceImpl implements OrderService {
         }
 
        orderRepository.save(order);
+        return "Order place successfully";
     }
 }
