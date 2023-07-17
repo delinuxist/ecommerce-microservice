@@ -27,7 +27,6 @@ public class OrderController {
 
     @PostMapping()
     @CircuitBreaker(name = "inventory",fallbackMethod = "fallbackMethod")
-    @TimeLimiter(name="inventory")
     @Retry(name="inventory")
     public ResponseEntity<CompletableFuture<String>> placeOrder(@RequestBody OrderRequestDto orderRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
