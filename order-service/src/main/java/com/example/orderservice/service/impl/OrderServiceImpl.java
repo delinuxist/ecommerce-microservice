@@ -1,5 +1,6 @@
 package com.example.orderservice.service.impl;
 
+import com.example.orderservice.dto.EventResponse;
 import com.example.orderservice.dto.InventoryResponseDto;
 import com.example.orderservice.dto.OrderRequestDto;
 import com.example.orderservice.entity.Order;
@@ -9,6 +10,7 @@ import com.example.orderservice.repository.OrderRepository;
 import com.example.orderservice.service.OrderService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -27,8 +29,10 @@ public class OrderServiceImpl implements OrderService {
 
     private final WebClient.Builder webClientBuilder;
 
+    private final KafkaTemplate<String,EventResponse> kafkaTemplate;
+
     @Override
-    public void placeOrder(OrderRequestDto orderRequestDto) {
+    public String placeOrder(OrderRequestDto orderRequestDto) {
         Order order = Order.builder()
                 .oderNumber(UUID.randomUUID())
                 .build();
@@ -62,5 +66,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
        orderRepository.save(order);
+        kafkaTemplate.send("notificationTopic", EventResponse.builder().orderNumber(order.getOderNumber()).build());
+        return "Order place successfully";
     }
 }

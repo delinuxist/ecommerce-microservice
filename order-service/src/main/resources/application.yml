@@ -14,6 +14,14 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: 'true'
+# kafka properties
+  kafka:
+    bootstrap-servers: http://localhost:50789
+    template:
+      default-topic: notificationTopic
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 
 server:
   port: 8003
@@ -22,3 +30,56 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+
+# actuator for circuit breaker config
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+#zipkin properties
+  tracing:
+    sampling:
+      probability: 1.0
+
+# Resilience config
+resilience4j:
+  circuitbreaker:
+    configs:
+      inventory:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        slidingWindowType: COUNT_BASED
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+#        record-exceptions:
+#          - org.springframework.web.client.HttpServerErrorException
+#          - java.util.concurrent.TimeoutException
+#          - java.io.IOException
+
+# resilience4j timeout properties
+  timelimiter:
+    instances:
+      inventory:
+        timeoutDuration: 3s
+
+# resilience4j retry properties
+  retry:
+    instances:
+      inventory:
+        maxAttempts: 3
+        waitDuration: 5s
+
+
+

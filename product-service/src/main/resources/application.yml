@@ -2,6 +2,13 @@ spring:
   application:
     name: product-service
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8080/realms/Ecommerce-Microservice/protocol/openid-connect/certs
+
+
   datasource:
     username: postgres
     url: jdbc:postgresql://localhost:5432/product_service
@@ -23,3 +30,8 @@ eureka:
 
 server:
   port: 8001
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
